@@ -129,11 +129,6 @@ app.get('/api/instrumentos/:idInstrumento', async (req,res)=>{
 
 })
 
-//////////////
-/* 
-  TODO: PATH , PATCH Y DELETE
-*/
-//////////////
 
 // Agregamos un objeto a la lista: 
 // http://localhost:9000/instrumentos
