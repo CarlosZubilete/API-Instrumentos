@@ -1,6 +1,7 @@
 import express from 'express'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import cors from 'cors'
 
 
 // Creamos una funcion para obtener: 
@@ -92,8 +93,10 @@ async function deleteByID(idInstrumento){
   ! GETS... 
 */
 
-
 const app = express()
+
+// Permite que las peticiones desde otro computador sean respondidas
+app.use(cors());
 
 // Midleware : analiza y procesa solicitudes entrantes en formato JSON
 app.use(express.json())
