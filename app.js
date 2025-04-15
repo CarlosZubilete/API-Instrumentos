@@ -10,94 +10,8 @@ import {  getAllInstrumentos,
   setInstrumentos,
   deleteByID} from './funciones.js';
 
-// Creamos una funcion para obtener: 
-// !TODOS LOS INSTRUMENTOS: (Inclusive los de baja lógica) 
-// async function getAllInstrumentos (){
-//   return fs.readFile(path.resolve('./files/instrumentos.json'))  
-//     .then((data) => {
-//       return JSON.parse(data.toString());
-//     })
-//     .catch(() => {
-//       throw Error ('NO SE PUEDE LEER EL ARCHIVO ./files/instrumentos.json')
-//       // puede retornar un Array vacio.
-//     })
-// }
-
-// Cremaos un función para obtener:
-// ! Solo los instrumentos activos. 
-// async function getInstrumentos (){
-//   const allInstumentos = await getAllInstrumentos();
-  
-//   const instrumentos = allInstumentos.filter((ins) => ins.active == true);
-  
-//   const instrumentosValidos = instrumentos.map((ins) => {
-//     return {
-//       "id": ins.id,
-//       "name": ins.name,
-//       "price": ins.price,
-//       "description": ins.description,
-//       "type": ins.type,
-//     }
-//   })
-
-//   return instrumentosValidos;
-// }
-
-
-// Creamos una funcion para buscar por ID
-// async function getByID(idInstrumento){
-//   const instrumentosList = await getInstrumentos();
-  
-//   return instrumentosList.find((elemento) => elemento.id == idInstrumento)
-//   /* 
-//     *FIND 
-//       Ejecuta la función callback una vez por cada índice del array,
-//       hasta que encuentre uno en el que el callback devuelva un valor verdadero. 
-//       Si es así, find devuelve inmediatamente el valor del elemento. 
-//       En caso contrario, find devuelve undefined .
-//   */
-// } 
-
-// Agrega un nuevo elemento al final de la lista.
-// async function addInstrumento(newInstrumento){
-//   // Obtenemos la lista de los instrumentos
-//   const instrumentosList = await getAllInstrumentos();
-//   console.log(newInstrumento)
-//   // Pusheamos el nuevo instrumento
-//   instrumentosList.push(newInstrumento);
-//   // Escribimos el nueva lista 
-//   return fs.writeFile(path.resolve('./files/instrumentos.json'), JSON.stringify(instrumentosList))
-// }
-
-// Escrribir en el archivo:
-// async function setInstrumentos(instrumentosList){
-//   return fs.writeFile(path.resolve('./files/instrumentos.json'), JSON.stringify(instrumentosList)); 
-// }
-
-
-// async function deleteByID(idInstrumento){
-
-//   const listaInstrumentos = await getAllInstrumentos();
-
-//   const instrumentosList = listaInstrumentos.map((elemento) => {
-//     if ( elemento.id != idInstrumento) return elemento
-
-//     return {
-//       "active": false,
-//       // !TODO {...elemment}? 
-//       "id": elemento.id,
-//       "name":elemento.name,
-//       "price": elemento.price,
-//       "description": elemento.description,
-//       "type":elemento.type
-//     }
-//   })
-
-//   // return fs.writeFile(path.resolve('./files/instrumentos.json'), JSON.stringify(instrumentosList))
-//   return setInstrumentos(instrumentosList)
-// }
 /*
-  ! GETS... 
+  *GETS... 
 */
 
 const app = express()
@@ -139,6 +53,10 @@ app.get('/api/instrumentos/:idInstrumento', async (req,res)=>{
 
 })
 
+
+/*
+ * POST - PATCH - DELETE 
+*/
 
 // Agregamos un objeto a la lista: 
 // http://localhost:9000/instrumentos
@@ -186,15 +104,23 @@ app.patch('/api/instrumentos/:idInstrumento', async (req,res)=>{
   
   const instrumentosList = await getAllInstrumentos();
   
+  // 
+  
   const nuevaLista = instrumentosList.map((elemento) => {
     if(elemento.id !== Number(idInstrumento)) return elemento;
+
+    // !TODO -> desde el front , puede poner espacios vacios o "" -> se lo asinga igual.
+    if ( req.body.name === undefined) { req.body.name  =  elemento.name };
+    if ( req.body.price === undefined) { req.body.price =  elemento.price };
+    if (req.body.description === undefined) {req.body.description = elemento.description};
+    if (req.body.type === undefined) {req.body.type = elemento.type};
 
     return {
       ...elemento,
       "name": req.body.name,
       "price": req.body.price,
       "description": req.body.description,    
-      "type": req.body.type,
+      "type": req.body.type,  
     }
   })
 

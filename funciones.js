@@ -78,14 +78,11 @@ async function deleteByID(idInstrumento){
     if ( elemento.id != idInstrumento) return elemento
 
     return {
-      "active": false,
-      // !TODO {...elemment}?
-      //...elemento 
-      "id": elemento.id,
-      "name":elemento.name,
-      "price": elemento.price,
-      "description": elemento.description,
-      "type":elemento.type
+      // "active": false,
+      // ...elemento -> lo pone en true otra vez... 
+
+      ... elemento, // copiamos todos las propiedaes y pisamos solo active.
+      "active":false,
     }
   })
 
