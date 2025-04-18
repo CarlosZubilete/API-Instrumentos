@@ -110,7 +110,7 @@ app.patch('/api/instrumentos/:idInstrumento', async (req,res)=>{
     if(elemento.id !== Number(idInstrumento)) return elemento;
 
     // !TODO -> desde el front , puede poner espacios vacios o "" -> se lo asinga igual.
-    if ( req.body.name === undefined) { req.body.name  =  elemento.name };
+    if (!req.body.name) { req.body.name  =  elemento.name };
     if ( req.body.price === undefined) { req.body.price =  elemento.price };
     if (req.body.description === undefined) {req.body.description = elemento.description};
     if (req.body.type === undefined) {req.body.type = elemento.type};
