@@ -1,26 +1,22 @@
 import express from 'express'
-// import fs from 'node:fs/promises'
-// import path from 'node:path'
 import cors from 'cors'
 
-import {  getAllInstrumentos,
-  getInstrumentos,
-  getByID,
-  addInstrumento,
-  setInstrumentos,
-  deleteByID} from './funciones.js';
+import {
+  updateInstrument,  
+  getInstruments,
+  getInstrumentByID,
+  addInstrument} from './funciones.js';
 
 /*
   *GETS... 
 */
 
+// Midleware : analiza y procesa solicitudes entrantes en formato JSON
 const app = express()
-
+app.use(express.json())
 // Permite que las peticiones desde otro computador sean respondidas
 app.use(cors());
 
-// Midleware : analiza y procesa solicitudes entrantes en formato JSON
-app.use(express.json())
 
 // Atendemos la solicitud: 
 // http://localhost:9000 
@@ -30,26 +26,24 @@ app.get('/',(req,res)=>{
 })
 
 // Atendemos la solicitud: 
-// http://localhost:9000/instrumentos
-app.get('/api/instrumentos' , (req,res) => {
-  getInstrumentos()
-    .then((instrumentosList) => {
-      res.json(instrumentosList)
-    })
+// http://localhost:9000/instruments
+app.get('/instruments' , async(req,res) => {
+  const instrumentsList = await getInstruments({isDeleted:false});
+  res.json(instrumentsList)
 })
 
 // Atendemos la solicitud: 
 // http://localhost:9000/instrumentos/:idInstrumento
-app.get('/api/instrumentos/:idInstrumento', async (req,res)=>{
+app.get('/instruments/:id', async (req,res)=>{
   // Hay dos formas:
   // 1. const idInstrumento = req.params.idInstrumento;
-  const{idInstrumento} = req.params  // 2. 
+  const{id} = req.params  // 2. 
 
   // Buscamos el id en la lista de objetos: 
-  const instrumento = await getByID(Number(idInstrumento)); 
+  const instrumento = await getInstrumentByID(id); 
 
   if(instrumento) res.json(instrumento);
-  else res.status(400).json({mensaje: "Producto no encontrado"})
+  else res.status(400).json({mensaje: "Resource has not found"});
 
 })
 
@@ -59,109 +53,68 @@ app.get('/api/instrumentos/:idInstrumento', async (req,res)=>{
 */
 
 // Agregamos un objeto a la lista: 
-// http://localhost:9000/instrumentos
-app.post('/api/instrumentos',async (req,res) => {
+// http://localhost:9000/instruments
+app.post('/instruments',async (req,res) => {
 
-  const instrumentosList = await getAllInstrumentos();
-  // Creamos un objeto:
-  const instrumento = Object ({
-    active:true, 
-    id: instrumentosList.length + 1 ,
-    "name": req.body.name, 
-    "price": req.body.price,
-    "description": req.body.description,
-    "type": req.body.type,
+  const instrument = await addInstrument({
+    name: req.body.name, 
+    price: req.body.price,
+    description: req.body.description,
+    type: req.body.type 
   })
 
-  addInstrumento(instrumento)
-    .then(() => {
-      res.status(201).json({mensaje: "Instrumento creado con exito"})
-    })
-    .catch(()=>{
-      res.status(304).json({mensaje: "ERROR! Instrumento no creado"})
-    })
+  //if(instrument) return res.status(201).json({mensaje:`Recurso creado: \n ${JSON.stringify(instrument,null,2)}`})
+  if(instrument) return res.status(201).json({menssage: "¡Created resource successfully!"})
+  return res.status(304).json({mensaje: "ERROR! Resource couldn't create"})
+
 })
 
 // Atendemos la solicitud: 
 // http://localhost:9000/instrumentos/:idInstrumento
 // ACTUALIZAMOS // !TODO: el patch solo necesita saber que propiedad se modificaron y acualizar
-app.patch('/api/instrumentos/:idInstrumento', async (req,res)=>{
+app.patch('/instruments/:id', async (req,res)=>{
   // 1. Obtenemos el ID
-  const {idInstrumento} = req.params;
+  const {id} = req.params;
   // 2. Buscamos el instrumento (underdined si no exite)
-  const instrumento = await getByID(Number(idInstrumento)); 
+  const instrumento = await getInstrumentByID(id);
 
-  if(!instrumento) return res.status(404).json({mensaje: `Instrumento ${idInstrumento} No encontrado`});
-  // 3. Cremamos un nuevo instrumento a modificar.
-  // const nuevoInstrumento = Object({
-  //   id: instrumento.id, 
-  //   "name": req.body.name, 
-  //   "description": req.body.description,
-  //   "type": req.body.type,
-  //   active: instrumento.active, 
-  // ! PREGUNTAR POR SPLICE.
-  // })
+  if(!instrumento) return res.status(404).json({mensaje: "Resource has not found"});
   
-  const instrumentosList = await getAllInstrumentos();
+  //  Averiguar cual propiedad fue cambiada, 
+  //  y setearle un objeto. con las propiedades cambiadas... 
+
+  if (!req.body.name) { req.body.name  =  instrumento.name };
+  if (!req.body.price) { req.body.price =  instrumento.price };
+  if (!req.body.description) {req.body.description = instrumento.description};
+  if (!req.body.type) {req.body.type = instrumento.type};
+
+  const newInstrument =  await updateInstrument({
+    name: req.body.name, 
+    price: req.body.price,
+    description: req.body.description,
+    type: req.body.type 
+  },id);
   
-  // 
-  
-  const nuevaLista = instrumentosList.map((elemento) => {
-    if(elemento.id !== Number(idInstrumento)) return elemento;
+  if (newInstrument) return  res.status(201).json({menssage: "Resource has benn modificated successfully!"})
 
-    // !TODO -> desde el front , puede poner espacios vacios o "" -> se lo asinga igual.
-    if (!req.body.name) { req.body.name  =  elemento.name };
-    if ( req.body.price === undefined) { req.body.price =  elemento.price };
-    if (req.body.description === undefined) {req.body.description = elemento.description};
-    if (req.body.type === undefined) {req.body.type = elemento.type};
-
-    return {
-      ...elemento,
-      "name": req.body.name,
-      "price": req.body.price,
-      "description": req.body.description,    
-      "type": req.body.type,  
-    }
-  })
-
-  setInstrumentos(nuevaLista)
-    .then(() => {
-      res.status(200).json({mensaje: `Instrumento ${idInstrumento} Modificado con exito`})
-    })
-    .catch(() => {
-      res.status(400).json({mensaje: "Producto no encontrado"})
-    })
+  return res.status(304).json({mensaje: "ERROR! Resource couldn't modificated"})
+ 
 })
 
-// BAJA LOGICA.
-app.delete('/api/instrumentos/:idInstrumento', async(req,res) =>{
+// Eiminación lógica.
+app.delete('/instruments/:id', async(req,res) =>{
   
-  const{idInstrumento} = req.params;
+  const{id} = req.params;
 
-  const id = Number(idInstrumento)
-  const instrumento = await getByID(id); 
+  const instrumento = await getInstrumentByID(id); 
 
-  if(!instrumento) return res.status(404).json({mensaje: `Instrumento ${id} No encontrado`});
+  if(instrumento === undefined) return res.status(404).json({mensaje: "Resouce has not found"});
     
-  deleteByID(id)
-    .then(()=>{
-      res.status(204).json({mensaje: `DELETE EXITOSO`})
-    })
-    .catch(()=>{
-      // 500 Error interno del servidor, un código general que indica que algo salió mal en el servidor 
-      res.status(500).json({mensaje: `ERROR DEL SERVIDOR`})
-    })
-   
+  const isDeleted = await updateInstrument( { isDeleted:true } ,id)
 
-  /* 
-    1. Tengo dos opciones, lo identifico por el ID o
-      lo identifico por su pocisión. 
-    2. Una vez intendificado , tengo que darlo de baja logica
-      en el array original.
-      { valido: false, 
-       ... elemento.}
-  */
+  if(isDeleted) return res.status(202).json({mensaje:"Resouce has been deleted"}) 
 
+  return res.status(404).json({mensaje:"Resouce has not found"})
 })
 
 // Escuchamos el puerto

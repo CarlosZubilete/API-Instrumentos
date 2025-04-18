@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Guitarra",
+    "price": 150,
+    "description": "Instrumento musical de cuerda pulsada",
+    "type": "Acústica",
+    "id": "90756967-bdf5-4208-8c89-295961b1a7e1",
+    "isDeleted": true
+  },
+  {
+    "name": "Piano",
+    "price": 2200,
+    "description": "Instrumento de teclado con cuerdas percutidas",
+    "type": "Acústico",
+    "id": "6691a4e6-06cd-4889-89c0-ac395c7ae8a3"
+  }
+]
