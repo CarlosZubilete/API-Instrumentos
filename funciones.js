@@ -24,8 +24,11 @@ async function getInstrumentByID(id){
 async function addInstrument(instrument){
   const instrumentList = await getInstruments(); // Todos los instrumentos 
   
-  const newInstrument = Object({...instrument, id:cryto.randomUUID()}) ;
+  // error crea un id de más 
+    // const newInstrument = new Object({...instrument, id:cryto.randomUUID()}); 
+  const newInstrument = {...instrument, id:cryto.randomUUID()} ;
 
+  // instrumentList.push({...instrument, id:cryto.randomUUID()});
   instrumentList.push(newInstrument);
 
   await setInstruments(instrumentList);
@@ -36,7 +39,6 @@ async function addInstrument(instrument){
 
 // 4. Escribimos la lista en un archivo
 async function setInstruments(instrumentosList){
-  //return fs.writeFile(path.resolve('./data/instrumentos.json'), JSON.stringify(instrumentosList)); 
   return fs.writeFile(path.resolve('./' , 'data/instruments.json'), JSON.stringify(instrumentosList)); 
 }
 

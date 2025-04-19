@@ -13,5 +13,20 @@
     "description": "Instrumento de teclado con cuerdas percutidas",
     "type": "Acústico",
     "id": "6691a4e6-06cd-4889-89c0-ac395c7ae8a3"
+  },
+  {
+    "name": "Violín",
+    "price": 1700,
+    "description": "Instrumento de cuerda frotada",
+    "type": "Clásico",
+    "id": "6d8a7121-6662-410e-a247-248e6898881c",
+    "isDeleted": true
+  },
+  {
+    "name": "Trompeta",
+    "price": 450,
+    "description": "Instrumento de viento-metal",
+    "type": "Clásico",
+    "id": "4b996976-ec14-4670-85bd-62ae7939eb82"
   }
 ]
