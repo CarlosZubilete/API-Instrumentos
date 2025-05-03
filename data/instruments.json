@@ -9,24 +9,59 @@
   },
   {
     "name": "Piano",
-    "price": 2200,
+    "price": 1200,
     "description": "Instrumento de teclado con cuerdas percutidas",
     "type": "Acústico",
-    "id": "6691a4e6-06cd-4889-89c0-ac395c7ae8a3"
+    "id": "5e24adbd-6e3e-490d-b77e-8a6a71bcff89"
   },
   {
-    "name": "Violín",
-    "price": 1700,
+    "name": "Violin",
+    "price": 700,
     "description": "Instrumento de cuerda frotada",
     "type": "Clásico",
-    "id": "6d8a7121-6662-410e-a247-248e6898881c",
-    "isDeleted": true
+    "id": "dcd9f0eb-96b6-49a0-8900-4f4bb3138062"
+  },
+  {
+    "name": "Batería ",
+    "price": 9000,
+    "description": "Conjunto de instrumentos de percusión",
+    "type": "Acústica",
+    "id": "066be1e8-7a90-44ab-9a87-c2103833c092"
+  },
+  {
+    "name": "Flauta",
+    "price": 10500,
+    "description": "Intrumento de viento de madera",
+    "type": "Transversal",
+    "id": "b8143550-250c-41a5-8fe4-b31e53784868"
   },
   {
     "name": "Trompeta",
-    "price": 450,
-    "description": "Instrumento de viento-metal",
+    "price": 4500,
+    "description": "Instrumento de viento Metal",
     "type": "Clásico",
-    "id": "4b996976-ec14-4670-85bd-62ae7939eb82"
+    "id": "3f2344ea-9838-42ce-a8d0-ada4df0d0acf",
+    "isDeleted": true
+  },
+  {
+    "name": "Saxofón",
+    "price": 60000,
+    "description": "Instrumento de viento de metal",
+    "type": "Alto",
+    "id": "aebff7c2-840b-4dd6-8185-85443d5ed3d0"
+  },
+  {
+    "name": "Teclado",
+    "price": 30000,
+    "description": "Instrumento de Teclado electronico",
+    "type": "Digital",
+    "id": "0c405c84-8480-4d05-9af2-9a75607b1f3a"
+  },
+  {
+    "name": "Bajo",
+    "price": 50000,
+    "description": "Instrumento con cuerda a al guitarra pero con tono más grave",
+    "type": "Eléctronico",
+    "id": "e96014e2-7d40-48f0-aa12-4a1a1438d3e8"
   }
 ]
