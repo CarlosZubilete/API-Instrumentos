@@ -42,16 +42,34 @@ client.connect()
 
 // OBTENER LOS INSTRUMENTOS:
 async function getInstruments (){
-  return db.collection('Instrumentos').find().toArray();
+  return db.collection('Instrumentos').find({isDeleted: undefined}).toArray();
 }
 
+// TODO: Deberia ir traer la coleción de los que estan de alta?
+// TODO: y ahi empezar a buscar por el id. 
 async function getInstrumentByID(id){
-  return db.collection('Instrumentos').findOne({_id: new ObjectId(id)})
+
+  const intrumentList =  db.collection('Instrumentos').find({isDeleted: undefined});
+
+  let doc; 
+  while(doc = await intrumentList.next() ){
+    // if(doc._id == new Object(id)){
+    //     return doc;
+    return doc._id.equals(new ObjectId(id))
+    
+  }
+  
+  // TODO: tengo que setearle a cada dumento la propiedad : isDelete = false; por defecto
+  //return intrumentList.findOne({_id: new ObjectId(id)});
+
+  // return db.collection('Instrumentos').findOne({
+  //   isDeleted: undefined,
+  //   _id: new ObjectId(id) })
 }
+
 // AGREGAR UN INSTRUMENTO: 
 async function addInstrument(instrument) {
   return db.collection('Instrumentos').insertOne(instrument);
-
 } 
 
 async function updateInstrument(changes,id) {
